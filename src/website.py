@@ -15,8 +15,14 @@ class Website:
       self.text = soup.body.get_text(separator='\n', strip=True)
     else:
       self.text = ''
-      links = [link.get('href') for link in soup.find_all('a')]
-      self.links = [link for link in links if link]
+    links = [link.get('href') for link in soup.find_all('a')]
+    self.links = [link for link in links if link]
 
   def get_content(self) -> str:
     return f'Website Title: {self.title}\nWebpage Contents:\n{self.text}\n\n'
+  
+
+if __name__ == "__main__":
+  ed = Website('https://edwarddonner.com')
+  print(ed.get_content())
+  print(ed.links)
