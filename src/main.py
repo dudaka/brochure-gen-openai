@@ -96,7 +96,24 @@ def create_brochure(company_name: str, url: str) -> str:
     result = response.choices[0].message.content
     md = Markdown(result)
     console.print(md)
+
+def stream_brochure(company_name: str, url: str):
+    stream = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+        ],
+        stream=True
+    )
+    response = ""
+    for chunk in stream:
+        response += chunk.choices[0].delta.content or ""
+        response = response.replace("markdown", "").replace("```", "")
+        md = Markdown(response)
+        console.clear()
+        console.print(md)
     
 
 if __name__ == "__main__":
-    create_brochure('Anthropic', 'https://anthropic.com')
+    stream_brochure('Hugging Face', 'https://huggingface.co')
